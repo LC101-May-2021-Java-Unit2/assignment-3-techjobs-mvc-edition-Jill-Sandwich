@@ -31,10 +31,15 @@ public class SearchController {
     @PostMapping("results")
     public String displaySearchResults(Model model, @RequestParam String searchType, @RequestParam String searchTerm){
         ArrayList<Job> jobs;
-        if (searchType.equals("all") || searchTerm.equals("")){
+        if (searchType.equals("all") || searchTerm.equals("") || searchTerm.equalsIgnoreCase("all")){
             jobs = JobData.findAll();
             model.addAttribute("title", "All Jobs");
-        }else {
+        }
+        if (searchType.equals("all") && searchTerm.equalsIgnoreCase("")){
+            jobs = JobData.findByColumnAndValue(searchType,searchTerm);
+            model.addAttribute("title", "Jobs with " + columnChoices.get(searchType) + ": " + searchTerm);
+        }
+        else {
             jobs = JobData.findByColumnAndValue(searchType, searchTerm);
             model.addAttribute("title", "Jobs with " + columnChoices.get(searchType) + ": " + searchTerm);
         }
